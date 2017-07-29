@@ -16,14 +16,13 @@
     "eslint": "^4.3.0",
     "eslint-config-airbnb-base": "^11.3.1",
     "eslint-plugin-import": "^2.7.0",
+    "graphql": "^0.10.5",
     "husky": "^0.14.3",
     "jest": "^20.0.4",
     "lodash": "^4.17.4",
     "validate-commit-message": "^3.0.1"
   },
-  "dependencies": {
-    "graphql": "^0.10.5"
-  },
+  "dependencies": {},
   "jest": {
     "coverageDirectory": "__coverage__",
     "coverageThreshold": {
@@ -49,5 +48,8 @@
   "bugs": {
     "url": "https://github.com/chasingmaxwell/graphql-anyscalar/issues"
   },
-  "homepage": "https://github.com/chasingmaxwell/graphql-anyscalar#readme"
+  "homepage": "https://github.com/chasingmaxwell/graphql-anyscalar#readme",
+  "peerDependencies": {
+    "graphql": "^0.10.5"
+  }
 }
