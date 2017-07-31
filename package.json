@@ -1,6 +1,6 @@
 {
   "name": "graphql-anyscalar",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Provides a GraphQL type capable of handling any scalar, resolving to the appropriate GraphQL type depending on the type of value supplied.",
   "main": "lib.js",
   "scripts": {
