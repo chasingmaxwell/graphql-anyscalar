@@ -7,6 +7,14 @@ const graphql = require('graphql');
   });
 });
 
+graphql.Kind = {
+  INT: 'INT',
+  FLOAT: 'FLOAT',
+  STRING: 'STRING',
+  BOOLEAN: 'BOOLEAN',
+  OBJECT: 'OBJECT',
+};
+
 const {
   AnyScalar,
 } = require('../lib');
@@ -34,29 +42,34 @@ describe('The AnyScalar type', () => {
     });
   });
 
-  const values = new Map();
-  values.set('string', 'GraphQLString');
-  values.set(false, 'GraphQLBoolean');
-  values.set(42, 'GraphQLInt');
-  values.set(4.2, 'GraphQLFloat');
-  values.forEach((type, val) => {
-    test(`Passes operations on ${val} to ${type}'s serialize method`, () => {
+  [
+    { kind: 'INT', value: 42, expectedType: 'GraphQLInt' },
+    { kind: 'STRING', value: 'some string', expectedType: 'GraphQLString' },
+    { kind: 'FLOAT', value: 4.2, expectedType: 'GraphQLFloat' },
+    { kind: 'BOOLEAN', value: false, expectedType: 'GraphQLBoolean' },
+  ].forEach(({ kind, value, expectedType }) => {
+    test(`Passes operations on ${value} to ${expectedType}'s serialize method`, () => {
       expect.assertions(2);
-      expect(config.serialize(val)).toBe('the return');
-      expect(graphql[type].serialize).toHaveBeenCalledWith(val);
+      expect(config.serialize(value)).toBe('the return');
+      expect(graphql[expectedType].serialize).toHaveBeenCalledWith(value);
     });
 
-    test(`Passes operations on ${val} to ${type}'s parseValue method`, () => {
+    test(`Passes operations on ${value} to ${expectedType}'s parseValue method`, () => {
       expect.assertions(2);
-      expect(config.parseValue(val)).toBe('the return');
-      expect(graphql[type].parseValue).toHaveBeenCalledWith(val);
+      expect(config.parseValue(value)).toBe('the return');
+      expect(graphql[expectedType].parseValue).toHaveBeenCalledWith(value);
     });
 
-    test(`Passes operations on ${val} to ${type}'s parseLiteral method`, () => {
+    test(`Passes operations on ${value} to ${expectedType}'s parseLiteral method`, () => {
       expect.assertions(2);
-      expect(config.parseLiteral(val)).toBe('the return');
-      expect(graphql[type].parseLiteral).toHaveBeenCalledWith(val);
+      expect(config.parseLiteral({ kind, value })).toBe('the return');
+      expect(graphql[expectedType].parseLiteral).toHaveBeenCalledWith({ kind, value });
     });
+  });
+
+  test('Unsupported kinds in parseLiteral return null', () => {
+    expect.assertions(1);
+    expect(config.parseLiteral({ kind: 'OBJECT', value: { iAm: 'an object' } })).toBeNull();
   });
 
   test('Throws an error when an unsupported type is requested', () => {

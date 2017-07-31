@@ -4,6 +4,7 @@ const {
   GraphQLInt,
   GraphQLFloat,
   GraphQLScalarType,
+  Kind,
 } = require('graphql');
 
 const getScalarType = (val) => {
@@ -29,7 +30,15 @@ const AnyScalar = new GraphQLScalarType({
     'respective types.',
   serialize: val => getScalarType(val).serialize(val),
   parseValue: val => getScalarType(val).parseValue(val),
-  parseLiteral: val => getScalarType(val).parseLiteral(val),
+  parseLiteral: (ast) => {
+    const type = {
+      [Kind.INT]: GraphQLInt,
+      [Kind.FLOAT]: GraphQLFloat,
+      [Kind.STRING]: GraphQLString,
+      [Kind.BOOLEAN]: GraphQLBoolean,
+    }[ast.kind];
+    return type ? type.parseLiteral(ast) : null;
+  },
 });
 
 module.exports = { AnyScalar };
